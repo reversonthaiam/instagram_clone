@@ -33,9 +33,15 @@ app.get('/', function (req, res) {
 
 app.post('/api', function (req, res) {
 
+
+    res.setHeader("Access-Control-Allow-Origin", "*")
+
     var dados = req.body;
 
-    db.open(function (err, mongoclient) {
+    console.log(dados);
+
+
+    /* db.open(function (err, mongoclient) {
         mongoclient.collection('postagens', function (err, collection) {
             collection.insert(dados, function (err, records) {
                 if (err) {
@@ -48,7 +54,7 @@ app.post('/api', function (req, res) {
                 mongoclient.close();
             })
         })
-    })
+    }) */
 
 })
 
@@ -87,7 +93,7 @@ app.get('/api/:id', function (req, res) {
                     res.json(err);
 
                 } else {
-                    res.json(results);
+                    res.status(500).json(results);
                 }
 
 
