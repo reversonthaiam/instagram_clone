@@ -166,10 +166,20 @@ app.put('/api/:id', function (req, res) {
 
 // DELETE by ID(delete)
 app.delete('/api/:id', function (req, res) {
+
+
     db.open(function (err, mongoclient) {
         mongoclient.collection('postagens', function (err, collection) {
-            collection.remove(
-                { _id: objectId(req.params.id) },
+            collection.update(
+                {},
+                {
+                    $pull: {
+
+                        comentarios: { id_comentario: objectId(req.params.id) }
+                    }
+                },
+                { multi: true },
+
                 function (err, records) {
                     if (err) {
                         res.json(err);
