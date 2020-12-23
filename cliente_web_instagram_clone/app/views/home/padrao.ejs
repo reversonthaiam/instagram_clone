@@ -39,8 +39,8 @@
 								'<img src="http://localhost:8080/imagens/' +
 								data[i].url_imagem + '" />' +
 								'<div class="comentar">' +
-								'<input type="text" class="form-control input_comentario" id="postagem_'+data[i]._id+'" placeholder="adicione um comentario" >' +
-								'<button class="btn btn-default btn_postagem" value="'+data[i]._id+'" type="button">Comentar </button>' +
+								'<input type="text" class="form-control input_comentario" id="postagem_' + data[i]._id + '" placeholder="adicione um comentario" >' +
+								'<button class="btn btn-default btn_postagem" value="' + data[i]._id + '" type="button">Comentar </button>' +
 
 								'</div>'
 								+
@@ -51,15 +51,22 @@
 							)
 						}
 
-						$('.btn_postagem').click( function(){
+						$('.btn_postagem').click(function () {
 							var id = this.value;
-							var id_input_comentario = 'postagem_'+id;
-							var comentario = $('#'+id_input_comentario).val();
-							
-							
+							var id_input_comentario = 'postagem_' + id;
+							var comentario = $('#' + id_input_comentario).val();
+
+
 							var xhr = new XMLHttpRequest();
-							xhr.open('PUT', 'http://localhost:8080/api/'+id);
-							xhr.send();
+							xhr.open('PUT', 'http://localhost:8080/api/' + id);
+							xhr.setRequestHeader('Content-Type', 'application/json');
+
+							xhr.onload = function () {
+								if (xhr.status === 200) {
+									window.location.href = '/home';
+								}
+							}
+							xhr.send(JSON.stringify({ comentario: comentario }));
 						})
 
 
@@ -148,8 +155,7 @@
 				</div>
 
 				<div class="form-group">
-					<input type="text" name="titulo" id="titulo" class="form-control" placeholder="Titulo"
-						autocomplete="off">
+					<input type="text" name="titulo" id="titulo" class="form-control" placeholder="Titulo" autocomplete="off">
 				</div>
 
 				<div class="form-group">

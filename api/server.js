@@ -12,6 +12,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(multiparty());
 
+app.use(function (req, res, next) {
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.setHeader("Access-Control-Allow-Headers", "Content-type");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    next();
+
+})
+
 var port = 8080;
 
 app.listen(port);
@@ -108,9 +118,6 @@ app.get('/imagens/:imagem', function (req, res) {
 // GET by ID(ready)
 app.get('/api/:id', function (req, res) {
 
-
-
-
     db.open(function (err, mongoclient) {
         mongoclient.collection('postagens', function (err, collection) {
             collection.find(objectId(req.params.id)).toArray(function (err, results) {
@@ -128,25 +135,33 @@ app.get('/api/:id', function (req, res) {
 // PUT by ID(update)
 app.put('/api/:id', function (req, res) {
 
-    res.send('rota para atualização de documentos');
-
-    /* db.open(function(err, mongoclient){
-        mongoclient.collection('postagens', function(err, collection){
+    db.open(function (err, mongoclient) {
+        mongoclient.collection('postagens', function (err, collection) {
             collection.update(
-                { _id : objectId(req.params.id) },
-                { $set : { titulo : req.body.titulo }},
+                { _id: objectId(req.params.id) },
+                {
+                    $push: {
+
+                        comentarios: {
+                            id_comentario: new objectId(),
+                            comentario: req.body.comentario
+                        }
+
+                    }
+
+                },
                 {},
-                function(err, records){
-                    if(err){
+                function (err, records) {
+                    if (err) {
                         res.json(err);
-                    }else{
+                    } else {
                         res.json(records);
                     }
                     mongoclient.close();
                 }
             );
         });
-    }); */
+    });
 });
 
 // DELETE by ID(delete)
